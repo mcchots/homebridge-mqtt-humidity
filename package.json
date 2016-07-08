@@ -1,0 +1,33 @@
+{
+  "name": "homebridge-mqtt-humidity",
+  "version": "0.1.0",
+  "description": "A HomeBridge plugin for MQTT relative humidity sensors.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcchots/homebridge-mqtt-humidity.git"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  },
+  "author": "mcchots",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcchots/homebridge-mqtt-humidity/issues"
+  },
+  "homepage": "https://github.com/mcchots/homebridge-mqtt-humidity#readme",
+  "dependencies": {
+    "mqtt": "^1.12.0"
+  }
+}
