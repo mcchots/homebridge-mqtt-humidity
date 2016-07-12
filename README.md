@@ -1,6 +1,11 @@
 # homebridge-mqtt-humidity
 Get Himidity Sensor data via MQTT in Homebridge
 
+Installation
+--------------------
+    sudo npm install -g homebridge-mqtt-humidity
+
+
 Sample HomeBridge Configuration
 --------------------
     {
