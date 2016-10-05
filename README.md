@@ -23,9 +23,20 @@ Sample HomeBridge Configuration
           "accessory": "mqtt-humidity",
           "name": "Living Room Humidity",
           "url": "mqtt://localhost",
-          "topic": "home/livingroom/humidity"
-    		}
+          "topic": "home/livingroom/humidity",
+          "username": "username",
+          "password": "password"
+				}
       ],
 
       "platforms": []
     }
+
+----    
+####  Credits
+
+[homebridge-mqttswitch](https://github.com/ilcato/homebridge-mqttswitch)
+
+[homebridge-mqttgaragedoor](https://github.com/tvillingett/homebridge-mqttgaragedoor)
+
+[homebridge-ds18b20](https://github.com/DanTheMan827/homebridge-ds18b20)

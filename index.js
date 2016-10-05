@@ -12,14 +12,32 @@ function RelativeHumidityAccessory(log, config) {
   this.name = config["name"];
   this.url = config['url'];
   this.topic = config['topic'];
-  
+  this.options = {
+    keepalive: 10,
+    clientId: this.client_Id,
+    protocolId: 'MQTT',
+    protocolVersion: 4,
+    clean: true,
+    reconnectPeriod: 1000,
+    connectTimeout: 30 * 1000,
+    will: {
+      topic: 'WillMsg',
+      payload: 'Connection Closed abnormally..!',
+      qos: 0,
+      retain: false
+    },
+    username: config["username"],
+    password: config["password"],
+    rejectUnauthorized: false
+  };
+
   this.service = new Service.HumiditySensor(this.name);
-  this.client  = mqtt.connect(this.url);
+  this.client  = mqtt.connect(this.url, this.options);
   var that = this;
   this.client.subscribe(this.topic);
- 
+
   this.client.on('message', function (topic, message) {
-    // message is Buffer 
+    // message is Buffer
     data = JSON.parse(message);
     if (data === null) {return null}
     that.humidity = parseFloat(data);
@@ -38,5 +56,3 @@ RelativeHumidityAccessory.prototype.getState = function(callback) {
 RelativeHumidityAccessory.prototype.getServices = function() {
   return [this.service];
 }
-
-
