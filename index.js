@@ -41,7 +41,10 @@ function RelativeHumidityAccessory(log, config) {
     data = JSON.parse(message);
     if (data === null) {return null}
     that.humidity = parseFloat(data);
-});
+    that.service
+      .setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
+
+  });
 
   this.service
     .getCharacteristic(Characteristic.CurrentRelativeHumidity)
