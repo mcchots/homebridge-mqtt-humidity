@@ -22,10 +22,11 @@ Sample HomeBridge Configuration
 				{
           "accessory": "mqtt-humidity",
           "name": "Living Room Humidity",
-          "url": "mqtt://localhost",
+          "url": "mqtt://10.0.0.5",
           "topic": "home/livingroom/humidity",
           "username": "username",
-          "password": "password"
+          "password": "password",
+          "serial": "HMH-54D3X"
 				}
       ],
 
@@ -33,6 +34,12 @@ Sample HomeBridge Configuration
     }
 
 ----    
+
+`serial` allows you to change the serial number to a custom value if you need it.
+
+It is optional as well as `username` and `password` if you don't use MQTT authentication.
+
+
 ####  Credits
 
 [homebridge-mqttswitch](https://github.com/ilcato/homebridge-mqttswitch)

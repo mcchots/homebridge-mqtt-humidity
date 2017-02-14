@@ -20,6 +20,7 @@ function RelativeHumidityAccessory(log, config) {
     clean: true,
     reconnectPeriod: 1000,
     connectTimeout: 30 * 1000,
+    serialnumber: config["serial"] || this.client_Id,
     will: {
       topic: 'WillMsg',
       payload: 'Connection Closed abnormally..!',
@@ -57,5 +58,11 @@ RelativeHumidityAccessory.prototype.getState = function(callback) {
 }
 
 RelativeHumidityAccessory.prototype.getServices = function() {
-  return [this.service];
+  var informationService = new Service.AccessoryInformation();
+  informationService
+    .setCharacteristic(Characteristic.Manufacturer, "MQTT Sensor")
+    .setCharacteristic(Characteristic.Model, "MQTT Humidity")
+    .setCharacteristic(Characteristic.SerialNumber, this.options["serialnumber"]);
+
+  return [informationService, this.service];
 }
