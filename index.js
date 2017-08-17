@@ -12,6 +12,7 @@ function RelativeHumidityAccessory(log, config) {
   this.name = config["name"];
   this.url = config['url'];
   this.topic = config['topic'];
+  this.client_Id = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
   this.options = {
     keepalive: 10,
     clientId: this.client_Id,
