@@ -40,12 +40,17 @@ function RelativeHumidityAccessory(log, config) {
 
   this.client.on('message', function (topic, message) {
     // message is Buffer
-    data = JSON.parse(message);
+    try {
+      data = JSON.parse(message);
+    } catch (e) {
+      return null;
+    }
     if (data === null) {return null}
     that.humidity = parseFloat(data);
-    that.service
-      .setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
-
+    if (!isNaN(that.humidity)) {
+      that.service
+        .setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
+    }
   });
 
   this.service
