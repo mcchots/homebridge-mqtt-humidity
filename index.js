@@ -1,5 +1,6 @@
 var Service, Characteristic;
-var mqtt    = require('mqtt');
+var mqtt = require('mqtt');
+var debug = require('debug')('mqtt-humidity')
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -12,6 +13,9 @@ function RelativeHumidityAccessory(log, config) {
   this.name = config["name"];
   this.url = config['url'];
   this.topic = config['topic'];
+  this.batt_topic = config['batt_topic'];
+  this.charge_topic = config['charge_topic'];
+  this.batt_low_perc = config['batt_low_perc'] || 20;
   this.client_Id = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
   this.options = {
     keepalive: 10,
@@ -35,8 +39,25 @@ function RelativeHumidityAccessory(log, config) {
 
   this.service = new Service.HumiditySensor(this.name);
   this.client  = mqtt.connect(this.url, this.options);
-  var that = this;
   this.client.subscribe(this.topic);
+
+  if (this.batt_topic) {
+    this.service.addCharacteristic(Characteristic.BatteryLevel)
+    .on('get', this.getBattery.bind(this));
+
+    this.service.addCharacteristic(Characteristic.StatusLowBattery)
+    .on('get', this.getLowBattery.bind(this));
+
+    this.client.subscribe(this.batt_topic);
+  }
+
+  if (this.charge_topic){
+    this.service.addCharacteristic(Characteristic.ChargingState)
+    .on('get', this.getChargingState.bind(this));
+
+    this.client.subscribe(this.charge_topic);
+  }
+  var that = this;
 
   this.client.on('message', function (topic, message) {
     // message is Buffer
@@ -46,10 +67,35 @@ function RelativeHumidityAccessory(log, config) {
       return null;
     }
     if (data === null) {return null}
-    that.humidity = parseFloat(data);
-    if (!isNaN(that.humidity)) {
+    data = parseFloat(data);
+    if (!isNaN(data)) {
+
+      if (topic === that.topic) { 
+        that.humidity = data;
+        debug('Sending MQTT.Humidity: ' + that.humidity);
       that.service
-        .setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
+        .getCharacteristic(Characteristic.CurrentRelativeHumidity).updateValue(that.humidity);
+      }
+      if (that.batt_topic) {
+        if (topic === that.batt_topic) { 
+          that.battery = data;
+          debug('Sending MQTT.Battery: ' + that.battery);
+          that.service
+            .getCharacteristic(Characteristic.BatteryLevel).updateValue(that.battery);
+          
+          (data <= that.batt_low_perc) ? that.lowBattery = true : that.lowBattery = false;
+
+          that.service
+            .getCharacteristic(Characteristic.StatusLowBattery).updateValue(that.lowBattery);
+        }
+      }  
+      if (topic == that.charge_topic){
+        that.chargingState = data;
+        debug('Sending MQTT.BattChargingState: ' + that.chargingState);
+        that.service
+          .getCharacteristic(Characteristic.ChargingState).updateValue(that.chargingState);
+  
+      }
     }
   });
 
@@ -59,8 +105,22 @@ function RelativeHumidityAccessory(log, config) {
 }
 
 RelativeHumidityAccessory.prototype.getState = function(callback) {
-    this.log(this.name, " - MQTT : ", this.humidity);
+    debug("Get Humidity called: " + this.humidity);
     callback(null, this.humidity);
+}
+
+RelativeHumidityAccessory.prototype.getBattery = function(callback) {
+  debug("Get Battery Called: " + this.battery);
+  callback(null, this.battery);
+}
+RelativeHumidityAccessory.prototype.getLowBattery = function(callback) {
+  debug("Get Low Battery Status: " + this.lowBattery);
+  callback(null, this.lowBattery);
+}
+
+RelativeHumidityAccessory.prototype.getChargingState = function(callback) {
+  debug("Get Charging Status: " + this.chargingState);
+  callback(null, this.chargingState);
 }
 
 RelativeHumidityAccessory.prototype.getServices = function() {
