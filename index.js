@@ -1,6 +1,5 @@
 var Service, Characteristic;
 var mqtt = require('mqtt');
-var debug = require('debug')('mqtt-humidity')
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -72,14 +71,14 @@ function RelativeHumidityAccessory(log, config) {
 
       if (topic === that.topic) { 
         that.humidity = data;
-        debug('Sending MQTT.Humidity: ' + that.humidity);
+        that.log.debug('Sending MQTT.Humidity: ' + that.humidity);
       that.service
         .getCharacteristic(Characteristic.CurrentRelativeHumidity).updateValue(that.humidity);
       }
       if (that.batt_topic) {
         if (topic === that.batt_topic) { 
           that.battery = data;
-          debug('Sending MQTT.Battery: ' + that.battery);
+          that.log.debug('Sending MQTT.Battery: ' + that.battery);
           that.service
             .getCharacteristic(Characteristic.BatteryLevel).updateValue(that.battery);
           
@@ -91,7 +90,7 @@ function RelativeHumidityAccessory(log, config) {
       }  
       if (topic == that.charge_topic){
         that.chargingState = data;
-        debug('Sending MQTT.BattChargingState: ' + that.chargingState);
+        that.log.debug('Sending MQTT.BattChargingState: ' + that.chargingState);
         that.service
           .getCharacteristic(Characteristic.ChargingState).updateValue(that.chargingState);
   
@@ -105,21 +104,21 @@ function RelativeHumidityAccessory(log, config) {
 }
 
 RelativeHumidityAccessory.prototype.getState = function(callback) {
-    debug("Get Humidity called: " + this.humidity);
+    this.log.debug("Get Humidity called: " + this.humidity);
     callback(null, this.humidity);
 }
 
 RelativeHumidityAccessory.prototype.getBattery = function(callback) {
-  debug("Get Battery Called: " + this.battery);
+  this.log.debug("Get Battery Called: " + this.battery);
   callback(null, this.battery);
 }
 RelativeHumidityAccessory.prototype.getLowBattery = function(callback) {
-  debug("Get Low Battery Status: " + this.lowBattery);
+  this.log.debug("Get Low Battery Status: " + this.lowBattery);
   callback(null, this.lowBattery);
 }
 
 RelativeHumidityAccessory.prototype.getChargingState = function(callback) {
-  debug("Get Charging Status: " + this.chargingState);
+  this.log.debug("Get Charging Status: " + this.chargingState);
   callback(null, this.chargingState);
 }
 
