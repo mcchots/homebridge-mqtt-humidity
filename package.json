@@ -1,6 +1,6 @@
 {
   "name": "homebridge-mqtt-humidity",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "A HomeBridge plugin for MQTT relative humidity sensors.",
   "main": "index.js",
   "scripts": {
