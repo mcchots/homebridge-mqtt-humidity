@@ -12,6 +12,7 @@ function RelativeHumidityAccessory(log, config) {
   this.name = config["name"];
   this.url = config['url'];
   this.topic = config['topic'];
+  this.refresh_topic = config['refresh_topic'];
   this.batt_topic = config['batt_topic'];
   this.charge_topic = config['charge_topic'];
   this.batt_low_perc = config['batt_low_perc'] || 20;
@@ -81,19 +82,19 @@ function RelativeHumidityAccessory(log, config) {
           that.log.debug('Sending MQTT.Battery: ' + that.battery);
           that.service
             .getCharacteristic(Characteristic.BatteryLevel).updateValue(that.battery);
-          
+
           (data <= that.batt_low_perc) ? that.lowBattery = true : that.lowBattery = false;
 
           that.service
             .getCharacteristic(Characteristic.StatusLowBattery).updateValue(that.lowBattery);
         }
-      }  
+      }
       if (topic == that.charge_topic){
         that.chargingState = data;
         that.log.debug('Sending MQTT.BattChargingState: ' + that.chargingState);
         that.service
           .getCharacteristic(Characteristic.ChargingState).updateValue(that.chargingState);
-  
+
       }
     }
   });
@@ -105,7 +106,14 @@ function RelativeHumidityAccessory(log, config) {
 
 RelativeHumidityAccessory.prototype.getState = function(callback) {
     this.log.debug("Get Humidity called: " + this.humidity);
-    callback(null, this.humidity);
+    if(!this.refresh_topic) {
+      callback(null, this.humidity);
+      return;
+    }
+    // request the humidity from the sensor
+    this.client.publish(this.refresh_topic, null, null, function(error, packet) {
+      callback(null, this.humidity);
+    })
 }
 
 RelativeHumidityAccessory.prototype.getBattery = function(callback) {

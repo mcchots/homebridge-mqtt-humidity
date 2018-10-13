@@ -24,6 +24,7 @@ Sample HomeBridge Configuration
           "name": "Living Room Humidity",
           "url": "mqtt://10.0.0.5",
           "topic": "home/livingroom/humidity/percentage",
+          "refresh_topic": "home/livingroom/humidity/get",
           "charge_topic": "home/livingroom/humidity/charge",
           "batt_topic: "home/livingroom/humidity/battery",
           "batt_low_perc": "25",
@@ -39,9 +40,14 @@ Sample HomeBridge Configuration
 ----    
 
 `serial` allows you to change the serial number to a custom value if you need it.
-`batt_topic`, `charge_topic` and `bat_low_perc` are for battery powered sensors. `batt_low_perc` overrides the default 20% value. `charge_topic` is for charging state. It requires values of either 0 or 1 for off and on respectively.
 
-All five are optional including `username` and `password` if you don't use MQTT authentication.
+`batt_topic`, `charge_topic` and `bat_low_perc` are for battery powered sensors.
+ - `batt_low_perc` overrides the default 20% value.
+ - `charge_topic` is for charging state. It requires values of either 0 or 1 for off and on respectively.
+
+`refresh_topic` lets you publish to a topic to refresh the current temperature value. This is useful in cases where your device publishes infrequently and you need an update between intervals. It requires your device to monitor this topic for requests. A request will published everytime homebridge makes a request, for example on opening the app.
+
+All five options are are optional as well as `username` and `password` if you don't use MQTT authentication.
 
 
 ####  Credits
