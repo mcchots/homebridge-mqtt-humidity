@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/mcchots/homebridge-mqtt-humidity#readme",
   "dependencies": {
-    "mqtt": "^2.18.8",
+    "mqtt": "^4.2.1",
     "mqtt-packet": "^6.1.2"
   }
 }
