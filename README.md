@@ -1,3 +1,9 @@
+DEPRECATION NOTICE
+--------------------
+----
+This package is deprecated. Please use [homebridge-mqtthing](https://www.npmjs.com/package/homebridge-mqttthing) instead. It is more mature, better tested, and offers additional-features.
+--------------------
+--------------------
 # homebridge-mqtt-humidity
 Get Humidity Sensor data via MQTT in Homebridge
 
